@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 
 import '../styles/tasklist.scss'
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi'
-
+// @ts-ignore
+import uuid from 'react-uuid'
 interface Task {
-  id: number;
+  id: number | string;
   title: string;
   isComplete: boolean;
 }
@@ -15,16 +16,42 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(!newTaskTitle) return
+    const createNewTask: Task = {
+      id: uuid(),
+      title: newTaskTitle,
+      isComplete: false
+    }
+    setTasks([...tasks, createNewTask])
+    setNewTaskTitle('')
   }
 
-  function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+  function handleToggleTaskCompletion(id: number | string) {
+    const differentTasks = tasks.filter(task => task.id !== id)
+    const verificatorTask = tasks.find(task => task.id === id)
+    if(verificatorTask) {
+      const currentTask: Task= verificatorTask
+      let editedTask: Task = {...currentTask, isComplete: !currentTask.isComplete}
+      setTasks([...differentTasks, editedTask])
+    }
   }
 
-  function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+  function handleRemoveTask(id: number | string) {
+    const differentTasks = tasks.filter(task => task.id !== id)
+    setTasks(differentTasks)
   }
+
+  useLayoutEffect(() => {
+    const getTasksinlocalStorage = localStorage.getItem('tasksToDo')
+    if(getTasksinlocalStorage) {
+      const tasksInTheLocalStorage: Task[] = JSON.parse(getTasksinlocalStorage)
+      setTasks(tasksInTheLocalStorage)
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('tasksToDo', JSON.stringify(tasks))
+  }, [tasks])
 
   return (
     <section className="task-list container">
