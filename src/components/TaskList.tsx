@@ -41,17 +41,17 @@ export function TaskList() {
     setTasks(differentTasks)
   }
 
-  useLayoutEffect(() => {
-    const getTasksinlocalStorage = localStorage.getItem('tasksToDo')
-    if(getTasksinlocalStorage) {
-      const tasksInTheLocalStorage: Task[] = JSON.parse(getTasksinlocalStorage)
-      setTasks(tasksInTheLocalStorage)
-    }
-  }, [])
+  // useLayoutEffect(() => {
+  //   const getTasksinlocalStorage = localStorage.getItem('tasksToDo')
+  //   if(getTasksinlocalStorage) {
+  //     const tasksInTheLocalStorage: Task[] = JSON.parse(getTasksinlocalStorage)
+  //     setTasks(tasksInTheLocalStorage)
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    localStorage.setItem('tasksToDo', JSON.stringify(tasks))
-  }, [tasks])
+  // useEffect(() => {
+  //   localStorage.setItem('tasksToDo', JSON.stringify(tasks))
+  // }, [tasks])
 
   return (
     <section className="task-list container">
